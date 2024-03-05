@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Test UI games</string>
+    <string name="title">Угадай число</string>
+    <string name="condition">Я думаю о числе от 1 до 10. Сможешь угадать?</string>
+</resources>
