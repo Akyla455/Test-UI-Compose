@@ -16,7 +16,7 @@
     <string name="request">Верный ответ.Сыграем ещё?</string>
     <string name="thanks">Спасибо за игру</string>
 
-    <string name="quantity">Попыток</string>
+    <string name="attempts">Попыток</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="attempts_format"> %1\$d</string>

@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -34,7 +35,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.testuigames.ViewModel.GameState
 import com.example.testuigames.ViewModel.GameViewModel
 import com.example.testuigames.ui.theme.TestUIGamesTheme
-
 
 
 class MainActivity : ComponentActivity() {
@@ -59,7 +59,6 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
 
         is GameState.Win -> {
             GameScreenRestart(
-                activity = MainActivity(),
                 stringResource = (gameState as GameState.Win).titleResource
             )
         }
@@ -68,6 +67,7 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
             Column {
                 GameScreen()
                 HiltText(hintResource = (gameState as GameState.Game).hintResource)
+                NumberOfAttempts((gameState as GameState.Game).attempts)
 
             }
         }
@@ -95,33 +95,11 @@ fun GameScreen() {
         ProcessingUserInput()
 
 
-
     }
 
 
 }
 
-@Composable
-fun HiltText(hintResource: Int,){
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 10.dp),
-        horizontalArrangement = Arrangement.SpaceAround) {
-        Text(
-            fontSize = 20.sp,
-            style = TextStyle(color = Color.Black),
-            text = stringResource(R.string.hint),
-            fontWeight = FontWeight.Bold
-        )
-        Text(stringResource(hintResource),
-            fontSize = 18.sp,
-            style = TextStyle(color = Color.Black)
-            )
-
-
-    }
-
-}
 
 @Composable
 fun TitleText(stringResource: Int) {
@@ -144,13 +122,14 @@ fun ProcessingUserInput(viewModel: GameViewModel = viewModel()) {
     }
 
     Column(
-        modifier = Modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextField(
-            value = userInput.value, onValueChange = { newInput ->
+            value = userInput.value,
+            onValueChange = { newInput ->
                 userInput.value = newInput
-            }, modifier = Modifier
+            },
+            modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -162,8 +141,7 @@ fun ProcessingUserInput(viewModel: GameViewModel = viewModel()) {
                 userInput.value = ""
 
 
-            },
-            modifier = Modifier
+            }, modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 15.dp)
                 .height(50.dp)
@@ -183,16 +161,66 @@ fun ProcessingUserInput(viewModel: GameViewModel = viewModel()) {
         }
 
     }
+}
 
+@Composable
+fun HiltText(hintResource: Int) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            fontSize = 20.sp,
+            style = TextStyle(color = Color.Black),
+            text = stringResource(R.string.hint),
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            stringResource(hintResource), fontSize = 18.sp, style = TextStyle(color = Color.Black)
+        )
+
+
+    }
 
 }
 
 @Composable
+fun NumberOfAttempts(attempts: Int) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp, horizontal = 10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = stringResource(R.string.attempts),
+            fontSize = 20.sp,
+            style = TextStyle(color = Color.Black),
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = attempts.toString(), fontSize = 20.sp, style = TextStyle(color = Color.Black)
+        )
+    }
+}
+
+class ActivityProvider(private val activity: ComponentActivity?) {
+    fun finishCurrentActivity() {
+        activity?.finish()
+    }
+}
+
+
+@Composable
 fun GameScreenRestart(
-    viewModel: GameViewModel = viewModel(),
-    activity: MainActivity,
-    stringResource: Int
+    viewModel: GameViewModel = viewModel(), stringResource: Int
 ) {
+    val context = LocalContext.current as? ComponentActivity
+    val activityProvider = remember {
+        ActivityProvider(context)
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -218,7 +246,7 @@ fun GameScreenRestart(
                 )
             }
             Button(
-                onClick = { activity.finish() },
+                onClick = { activityProvider.finishCurrentActivity() },
                 modifier = Modifier.size(width = 100.dp, height = 50.dp)
             ) {
                 Text(
@@ -241,6 +269,7 @@ fun PreviewProcessingUserInput() {
         Column {
             GameScreen()
             HiltText(hintResource = (R.string.hint1))
+            NumberOfAttempts(attempts = 0)
 
         }
 
