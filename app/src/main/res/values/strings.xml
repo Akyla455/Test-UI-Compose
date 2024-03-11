@@ -7,7 +7,7 @@
     <string name="input_request">Я думаю о числе от 1 до 10. Сможете ли вы угадать его?</string>
     <string name="input_numbers">Введите число</string>
     <string name="input">Ввод</string>
-    <string name="hint">Подсказка</string>
+    <string name="hint">Подсказка:</string>
     <string name="hint1">Загаданное число меньше.</string>
     <string name="hint2">Загаданное число больше.</string>
     <string name="error3">Ошибка! Недопустимый ввод.</string>
