@@ -52,29 +52,37 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GameScreenState(viewModel: GameViewModel = viewModel()) {
     val gameState by viewModel.gameState.observeAsState()
-    when (gameState) {
-        is GameState.InputRequest -> {
-            GameScreen()
-        }
-
-        is GameState.Win -> {
-            GameScreenRestart(
-                stringResource = (gameState as GameState.Win).titleResource
-            )
-        }
-
-        is GameState.Game -> {
-            Column {
-                GameScreen()
-                HiltText(hintResource = (gameState as GameState.Game).hintResource)
-                NumberOfAttempts((gameState as GameState.Game).attempts)
+    gameState?.let { state ->
+        when (state) {
+            is GameState.InputRequest -> {
+                Column {
+                    GameScreen()
+                    HiltText(hintResource = R.string.empty)
+                    NumberOfAttempts(0)
+                }
 
             }
+
+            is GameState.Win -> {
+                GameScreenRestart(
+                    onRestartGameTap = { viewModel.restartGame() },
+                    stringResource = state.titleResource
+                )
+            }
+
+            is GameState.Game -> {
+                Column {
+                    GameScreen()
+                    HiltText(hintResource = state.hintResource)
+                    NumberOfAttempts(state.attempts)
+
+                }
+            }
+
         }
 
-
-        else -> {}
     }
+
 
 }
 
@@ -137,8 +145,10 @@ fun ProcessingUserInput(viewModel: GameViewModel = viewModel()) {
         )
         Button(
             onClick = {
-                viewModel.checkUserInput(userInput.value.toInt())
-                userInput.value = ""
+                userInput.value.toIntOrNull()?.let { number ->
+                    viewModel.checkUserInput(number)
+                    userInput.value = ""
+                }
 
 
             }, modifier = Modifier
@@ -215,8 +225,9 @@ class ActivityProvider(private val activity: ComponentActivity?) {
 
 @Composable
 fun GameScreenRestart(
-    viewModel: GameViewModel = viewModel(), stringResource: Int
+    onRestartGameTap: () -> Unit, stringResource: Int
 ) {
+
     val context = LocalContext.current as? ComponentActivity
     val activityProvider = remember {
         ActivityProvider(context)
@@ -234,7 +245,7 @@ fun GameScreenRestart(
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Button(
-                onClick = { viewModel.restartTheGame() },
+                onClick = onRestartGameTap,
                 modifier = Modifier.size(width = 100.dp, height = 50.dp)
             ) {
                 Text(

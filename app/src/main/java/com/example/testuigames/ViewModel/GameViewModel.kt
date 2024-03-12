@@ -48,7 +48,7 @@ class GameViewModel : ViewModel() {
 
     }
 
-    fun restartTheGame() {
+    fun restartGame() {
         startNewGame()
     }
 

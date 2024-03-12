@@ -14,7 +14,7 @@
     <string name="offset">Поздравляю! Верный ответ.</string>
     <string name="gues_number">Угадайте число от 1 до 10</string>
     <string name="request">Верный ответ.Сыграем ещё?</string>
-    <string name="thanks">Спасибо за игру</string>
+    <string name="empty"> </string>
 
     <string name="attempts">Попыток</string>
     <string name="yes">Да</string>
