@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.testuigames.R
 
 sealed class GameState {
-    data class InputRequest(@StringRes val titleResource: Int) : GameState()
+    data object InputRequest : GameState()
     data class Win(@StringRes val titleResource: Int) : GameState()
     data class Game(@StringRes val hintResource: Int, val attempts: Int) : GameState()
 
@@ -30,7 +30,7 @@ class GameViewModel : ViewModel() {
     private fun startNewGame() {
         random = randomNumbers()
         attempts = 0
-        _gameState.value = GameState.InputRequest(R.string.input_request)
+        _gameState.value = GameState.InputRequest
     }
 
     fun checkUserInput(userInput: Int) {

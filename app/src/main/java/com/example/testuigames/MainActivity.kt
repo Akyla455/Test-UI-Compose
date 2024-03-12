@@ -56,9 +56,8 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
         when (state) {
             is GameState.InputRequest -> {
                 Column {
-                    GameScreen()
-                    HiltText(hintResource = R.string.empty)
-                    NumberOfAttempts(0)
+                    GameScreen(resource = null, attempts = 0)
+
                 }
 
             }
@@ -72,9 +71,7 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
 
             is GameState.Game -> {
                 Column {
-                    GameScreen()
-                    HiltText(hintResource = state.hintResource)
-                    NumberOfAttempts(state.attempts)
+                    GameScreen(resource = state.hintResource, attempts = state.attempts)
 
                 }
             }
@@ -87,7 +84,7 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
 }
 
 @Composable
-fun GameScreen() {
+fun GameScreen(resource: Int?, attempts: Int) {
 
 
     Column(
@@ -101,6 +98,8 @@ fun GameScreen() {
         )
         TitleText(stringResource = R.string.input_request)
         ProcessingUserInput()
+        HintText(hintResource = resource)
+        NumberAttempts(attempts = attempts)
 
 
     }
@@ -174,7 +173,7 @@ fun ProcessingUserInput(viewModel: GameViewModel = viewModel()) {
 }
 
 @Composable
-fun HiltText(hintResource: Int) {
+fun HintText(hintResource: Int?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -187,9 +186,12 @@ fun HiltText(hintResource: Int) {
             text = stringResource(R.string.hint),
             fontWeight = FontWeight.Bold
         )
-        Text(
-            stringResource(hintResource), fontSize = 18.sp, style = TextStyle(color = Color.Black)
-        )
+        hintResource?.let {
+            Text(
+                stringResource(hintResource), fontSize = 18.sp, style = TextStyle(color = Color.Black)
+            )
+        }
+
 
 
     }
@@ -197,7 +199,7 @@ fun HiltText(hintResource: Int) {
 }
 
 @Composable
-fun NumberOfAttempts(attempts: Int) {
+fun NumberAttempts(attempts: Int) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -278,9 +280,8 @@ fun GameScreenRestart(
 fun PreviewProcessingUserInput() {
     TestUIGamesTheme {
         Column {
-            GameScreen()
-            HiltText(hintResource = (R.string.hint1))
-            NumberOfAttempts(attempts = 0)
+            GameScreen(R.string.hint1, 0)
+
 
         }
 
