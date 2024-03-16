@@ -28,13 +28,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.testuigames.ViewModel.GameState
-import com.example.testuigames.ViewModel.GameViewModel
-import com.example.testuigames.ui.theme.TestUIGamesTheme
+import com.example.testuigames.viewModel.GameState
+import com.example.testuigames.viewModel.GameViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -56,7 +54,11 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
         when (state) {
             is GameState.InputRequest -> {
                 Column {
-                    GameScreen(resource = null, attempts = 0)
+                    GameScreen(
+                        resource = null,
+                        attempts = 0,
+                        viewModel
+                    )
 
                 }
 
@@ -71,7 +73,11 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
 
             is GameState.Game -> {
                 Column {
-                    GameScreen(resource = state.hintResource, attempts = state.attempts)
+                    GameScreen(
+                        resource = state.hintResource,
+                        attempts = state.attempts,
+                        viewModel
+                    )
 
                 }
             }
@@ -84,7 +90,11 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
 }
 
 @Composable
-fun GameScreen(resource: Int?, attempts: Int) {
+fun GameScreen(
+    resource: Int?,
+    attempts: Int,
+    viewModel: GameViewModel
+) {
 
 
     Column(
@@ -97,7 +107,7 @@ fun GameScreen(resource: Int?, attempts: Int) {
             text = stringResource(R.string.title)
         )
         TitleText(stringResource = R.string.input_request)
-        ProcessingUserInput()
+        ProcessingUserInput(viewModel)
         HintText(hintResource = resource)
         NumberAttempts(attempts = attempts)
 
@@ -122,7 +132,7 @@ fun TitleText(stringResource: Int) {
 }
 
 @Composable
-fun ProcessingUserInput(viewModel: GameViewModel = viewModel()) {
+fun ProcessingUserInput(viewModel: GameViewModel) {
 
     val userInput = remember {
         mutableStateOf("")
@@ -188,10 +198,11 @@ fun HintText(hintResource: Int?) {
         )
         hintResource?.let {
             Text(
-                stringResource(hintResource), fontSize = 18.sp, style = TextStyle(color = Color.Black)
+                stringResource(hintResource),
+                fontSize = 18.sp,
+                style = TextStyle(color = Color.Black)
             )
         }
-
 
 
     }
@@ -275,24 +286,3 @@ fun GameScreenRestart(
     }
 }
 
-@Preview
-@Composable
-fun PreviewProcessingUserInput() {
-    TestUIGamesTheme {
-        Column {
-            GameScreen(R.string.hint1, 0)
-
-
-        }
-
-    }
-}
-
-
-@Preview
-@Composable
-fun PreviewGameRestart() {
-    TestUIGamesTheme {
-        //GameScreenRestart(activity = ComponentActivity())
-    }
-}

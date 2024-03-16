@@ -1,5 +1,7 @@
-package com.example.testuigames.ViewModel
+package com.example.testuigames.viewModel
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +16,7 @@ sealed class GameState {
 }
 
 
-class GameViewModel : ViewModel() {
+class GameViewModel() : ViewModel(), Parcelable {
 
     private var random = randomNumbers()
     private var attempts = 0
@@ -22,6 +24,11 @@ class GameViewModel : ViewModel() {
     private val _gameState = MutableLiveData<GameState>()
     val gameState: LiveData<GameState>
         get() = _gameState
+
+    constructor(parcel: Parcel) : this() {
+        random = parcel.readInt()
+        attempts = parcel.readInt()
+    }
 
     init {
         startNewGame()
@@ -56,6 +63,25 @@ class GameViewModel : ViewModel() {
         val min = 1
         val max = 10
         return (min..max).random()
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(random)
+        parcel.writeInt(attempts)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<GameViewModel> {
+        override fun createFromParcel(parcel: Parcel): GameViewModel {
+            return GameViewModel(parcel)
+        }
+
+        override fun newArray(size: Int): Array<GameViewModel?> {
+            return arrayOfNulls(size)
+        }
     }
 
 
