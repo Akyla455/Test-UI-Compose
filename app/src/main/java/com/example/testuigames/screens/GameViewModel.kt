@@ -7,8 +7,12 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.testuigames.R
 import com.example.testuigames.network.NetworkManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 sealed class GameState {
     data object InputRequest : GameState()
@@ -43,22 +47,25 @@ class GameViewModel() : ViewModel(), Parcelable {
         attempts = 0
         _gameState.value = GameState.InputRequest
     }
-    private fun fetchCurrencyData(){
-        val call = NetworkManager.currencyApi.getCurrencyData()
 
-        try {
-            val response = call.execute()
-            if (response.isSuccessful){
-                val dataCurrency = response.body()
-                if (dataCurrency != null){
-                    maxCurrencyValue = dataCurrency.USD.toInt()
+    private fun fetchCurrencyData() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val call = NetworkManager.currencyApi.getCurrencyData()
+
+                try {
+                    val response = call.execute()
+                    if (response.isSuccessful) {
+                        val dataCurrency = response.body()
+                        if (dataCurrency != null) {
+                            maxCurrencyValue = dataCurrency.usd.toInt()
+                        }
+                    } else Log.e("GameViewModel", "Error: ${response.code()}")
+                } catch (e: Exception) {
+                    Log.e("GameViewModel", "Failed to fetch currency data", e)
                 }
-            } else Log.e("GameViewModel", "Error: ${response.code()}")
-        } catch (e: Exception){
-            Log.e("GameViewModel", "Failed to fetch currency data", e)
+            }
         }
-
-
     }
 
     fun checkUserInput(userInput: Int) {
