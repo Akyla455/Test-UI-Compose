@@ -9,10 +9,9 @@ import retrofit2.http.GET
 
 
 interface CurrencyApi{
-    @GET("currencies.json")
+    @GET("latest.json?app_id=686b5827047e4e33bdc06effd904e56d")
     fun getCurrencyData(): Call<DataCurrency>
 }
-
 object NetworkManager{
     private const val BASE_URL = "https://openexchangerates.org/api/"
     private val retrofit = Retrofit.Builder()

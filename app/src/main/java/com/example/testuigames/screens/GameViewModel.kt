@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 sealed class GameState {
+    data object LoadingState: GameState()
     data object InputRequest : GameState()
     data class Win(@StringRes val titleResource: Int) : GameState()
     data class Game(@StringRes val hintResource: Int, val attempts: Int) : GameState()
@@ -39,7 +40,7 @@ class GameViewModel() : ViewModel(), Parcelable {
 
     init {
         fetchCurrencyData()
-        startNewGame()
+        //startNewGame()
     }
 
     private fun startNewGame() {
@@ -49,6 +50,7 @@ class GameViewModel() : ViewModel(), Parcelable {
     }
 
     private fun fetchCurrencyData() {
+        _gameState.value = GameState.LoadingState
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 val call = NetworkManager.currencyApi.getCurrencyData()
@@ -58,7 +60,8 @@ class GameViewModel() : ViewModel(), Parcelable {
                     if (response.isSuccessful) {
                         val dataCurrency = response.body()
                         if (dataCurrency != null) {
-                            maxCurrencyValue = dataCurrency.usd.toInt()
+                            maxCurrencyValue = dataCurrency.ern.toInt()
+                            _gameState.value = GameState.InputRequest
                         }
                     } else Log.e("GameViewModel", "Error: ${response.code()}")
                 } catch (e: Exception) {
