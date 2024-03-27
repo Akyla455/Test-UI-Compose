@@ -43,10 +43,10 @@ class GameViewModel() : ViewModel(), Parcelable {
         //startNewGame()
     }
 
-    private fun startNewGame() {
-        random = randomNumbers()
+    private fun startNewGame(startNumber: Int? = null) {
+        random = startNumber ?: randomNumbers()
         attempts = 0
-        _gameState.value = GameState.InputRequest
+        _gameState.postValue(GameState.InputRequest)
     }
 
     private fun fetchCurrencyData() {
@@ -60,8 +60,8 @@ class GameViewModel() : ViewModel(), Parcelable {
                     if (response.isSuccessful) {
                         val dataCurrency = response.body()
                         if (dataCurrency != null) {
-                            maxCurrencyValue = dataCurrency.ern.toInt()
-                            _gameState.value = GameState.InputRequest
+                            maxCurrencyValue = dataCurrency.rates.afn.toInt()
+                            startNewGame(maxCurrencyValue)
                         }
                     } else Log.e("GameViewModel", "Error: ${response.code()}")
                 } catch (e: Exception) {
@@ -103,19 +103,15 @@ class GameViewModel() : ViewModel(), Parcelable {
 
     override fun describeContents(): Int {
         return 0
-
     }
 
     companion object CREATOR : Parcelable.Creator<GameViewModel> {
         override fun createFromParcel(parcel: Parcel): GameViewModel {
             return GameViewModel(parcel)
-
         }
 
         override fun newArray(size: Int): Array<GameViewModel?> {
             return arrayOfNulls(size)
-
         }
-
     }
 }

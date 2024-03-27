@@ -4,7 +4,7 @@
     <string name="condition">Я думаю о числе от 1 до 10. Сможешь угадать?</string>
     <string name="textCheckButton">Ввод</string>
 
-    <string name="input_request">Я думаю о числе от 1 до 10. Сможете ли вы угадать его?</string>
+    <string name="input_request">Я думаю о числе от 1 до %d. Сможете ли вы угадать его?</string>
     <string name="input_numbers">Введите число</string>
     <string name="input">Ввод</string>
     <string name="hint">Подсказка:</string>

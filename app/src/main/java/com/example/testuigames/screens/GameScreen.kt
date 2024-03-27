@@ -95,7 +95,7 @@ fun GameScreen(
             style = TextStyle(color = Color.Black),
             text = stringResource(R.string.title)
         )
-        TitleText(stringResource = R.string.input_request)
+        TitleText(string = stringResource(R.string.input_request, 88))
         ProcessingUserInput(viewModel)
         HintText(hintResource = resource)
         NumberAttempts(attempts = attempts)
@@ -108,7 +108,7 @@ fun GameScreen(
 
 
 @Composable
-fun TitleText(stringResource: Int) {
+fun TitleText(string: String) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
@@ -116,7 +116,7 @@ fun TitleText(stringResource: Int) {
         style = TextStyle(color = Color.Black),
         fontSize = 24.sp,
         textAlign = TextAlign.Center,
-        text = stringResource(stringResource)
+        text = string
     )
 }
 
@@ -239,7 +239,7 @@ fun GameScreenRestart(
             .fillMaxWidth()
             .padding(vertical = 100.dp, horizontal = 20.dp)
     ) {
-        TitleText(stringResource = stringResource)
+        TitleText(string = stringResource(stringResource))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
