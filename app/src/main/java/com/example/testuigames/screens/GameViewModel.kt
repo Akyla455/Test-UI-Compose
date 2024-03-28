@@ -16,9 +16,12 @@ import kotlinx.coroutines.withContext
 
 sealed class GameState {
     data object LoadingState: GameState()
-    data object InputRequest : GameState()
-    data class Win(@StringRes val titleResource: Int) : GameState()
-    data class Game(@StringRes val hintResource: Int, val attempts: Int) : GameState()
+    data class InputRequest(val maxValue: Int) : GameState()
+    data class Win(@StringRes val titleResource: Int,
+                   val value: Int) : GameState()
+    data class Game(@StringRes val hintResource: Int,
+                    val attempts: Int,
+                    val value: Int) : GameState()
 
 }
 
@@ -40,13 +43,16 @@ class GameViewModel() : ViewModel(), Parcelable {
 
     init {
         fetchCurrencyData()
-        //startNewGame()
+
     }
 
-    private fun startNewGame() {
+    private fun startNewGame(currencyValue: Int? = null) {
+        if (currencyValue != null) {
+            maxCurrencyValue = currencyValue
+        }
         random = randomNumbers()
         attempts = 0
-        _gameState.value = GameState.InputRequest
+        _gameState.postValue(GameState.InputRequest(maxCurrencyValue))
     }
 
     private fun fetchCurrencyData() {
@@ -60,10 +66,13 @@ class GameViewModel() : ViewModel(), Parcelable {
                     if (response.isSuccessful) {
                         val dataCurrency = response.body()
                         if (dataCurrency != null) {
-                            maxCurrencyValue = dataCurrency.ern.toInt()
-                            _gameState.value = GameState.InputRequest
+                            maxCurrencyValue = dataCurrency.rates.rub.toInt()
+                            startNewGame(maxCurrencyValue)
                         }
-                    } else Log.e("GameViewModel", "Error: ${response.code()}")
+                    } else {
+                        Log.e("GameViewModel", "Error: ${response.code()}")
+                        startNewGame()
+                    }
                 } catch (e: Exception) {
                     Log.e("GameViewModel", "Failed to fetch currency data", e)
                 }
@@ -74,13 +83,13 @@ class GameViewModel() : ViewModel(), Parcelable {
     fun checkUserInput(userInput: Int) {
         attempts++
         if (userInput == random) {
-            _gameState.value = GameState.Win(R.string.request)
+            _gameState.value = GameState.Win(R.string.request, maxCurrencyValue)
 
         } else if (userInput > random) {
-            _gameState.value = GameState.Game(R.string.hint1, attempts)
+            _gameState.value = GameState.Game(R.string.hint1, attempts, maxCurrencyValue)
 
         } else {
-            _gameState.value = GameState.Game(R.string.hint2, attempts)
+            _gameState.value = GameState.Game(R.string.hint2, attempts, maxCurrencyValue)
         }
 
 
@@ -93,7 +102,11 @@ class GameViewModel() : ViewModel(), Parcelable {
     private fun randomNumbers(): Int {
         val min = 1
         val max = 10
-        return (min..max).random()
+
+        return if(maxCurrencyValue > 0){
+            (min..maxCurrencyValue).random()
+        } else (min..max).random()
+
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

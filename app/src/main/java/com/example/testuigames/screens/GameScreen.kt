@@ -44,6 +44,7 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
                     GameScreen(
                         resource = null,
                         attempts = 0,
+                        value = state.maxValue,
                         viewModel
                     )
 
@@ -54,7 +55,8 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
             is GameState.Win -> {
                 GameScreenRestart(
                     onRestartGameTap = { viewModel.restartGame() },
-                    stringResource = state.titleResource
+                    stringResource = state.titleResource,
+
                 )
             }
 
@@ -63,6 +65,7 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
                     GameScreen(
                         resource = state.hintResource,
                         attempts = state.attempts,
+                        value = state.value,
                         viewModel
                     )
 
@@ -82,6 +85,7 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
 fun GameScreen(
     resource: Int?,
     attempts: Int,
+    value: Int,
     viewModel: GameViewModel
 ) {
 
@@ -95,7 +99,7 @@ fun GameScreen(
             style = TextStyle(color = Color.Black),
             text = stringResource(R.string.title)
         )
-        TitleText(stringResource = R.string.input_request)
+        TitleText(string = stringResource(R.string.input_request, value))
         ProcessingUserInput(viewModel)
         HintText(hintResource = resource)
         NumberAttempts(attempts = attempts)
@@ -108,7 +112,7 @@ fun GameScreen(
 
 
 @Composable
-fun TitleText(stringResource: Int) {
+fun TitleText(string: String) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
@@ -116,7 +120,7 @@ fun TitleText(stringResource: Int) {
         style = TextStyle(color = Color.Black),
         fontSize = 24.sp,
         textAlign = TextAlign.Center,
-        text = stringResource(stringResource)
+        text = string
     )
 }
 
@@ -239,7 +243,7 @@ fun GameScreenRestart(
             .fillMaxWidth()
             .padding(vertical = 100.dp, horizontal = 20.dp)
     ) {
-        TitleText(stringResource = stringResource)
+        TitleText(string = stringResource(stringResource))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
