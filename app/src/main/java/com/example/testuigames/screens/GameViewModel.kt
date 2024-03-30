@@ -15,17 +15,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 sealed class GameState {
-    data object LoadingState: GameState()
-    data class InputRequest(val maxValue: Int) : GameState()
-    data class Win(@StringRes val titleResource: Int,
-                   val value: Int) : GameState()
-    data class Game(@StringRes val hintResource: Int,
-                    val attempts: Int,
-                    val value: Int) : GameState()
+    data object LoadingState : GameState()
+    data class Win(@StringRes val titleResource: Int) : GameState()
+    data class Game(
+        @StringRes val titleResource: Int,
+        @StringRes val hintResource: Int? = null,
+        val attempts: Int,
+        val maxvalue: Int
+    ) : GameState()
 
 }
-
-
 class GameViewModel() : ViewModel(), Parcelable {
 
     private var random = randomNumbers()
@@ -52,9 +51,12 @@ class GameViewModel() : ViewModel(), Parcelable {
         }
         random = randomNumbers()
         attempts = 0
-        _gameState.postValue(GameState.InputRequest(maxCurrencyValue))
+        _gameState.postValue(
+            GameState.Game(
+                R.string.input_request, null, attempts, maxCurrencyValue
+            )
+        )
     }
-
     private fun fetchCurrencyData() {
         _gameState.value = GameState.LoadingState
         viewModelScope.launch {
@@ -79,52 +81,49 @@ class GameViewModel() : ViewModel(), Parcelable {
             }
         }
     }
-
     fun checkUserInput(userInput: Int) {
         attempts++
         if (userInput == random) {
-            _gameState.value = GameState.Win(R.string.request, maxCurrencyValue)
+            _gameState.value = GameState.Win(R.string.request)
 
         } else if (userInput > random) {
-            _gameState.value = GameState.Game(R.string.hint1, attempts, maxCurrencyValue)
+            _gameState.value = GameState.Game(
+                R.string.input_request, R.string.hint1, attempts, maxCurrencyValue
+            )
 
         } else {
-            _gameState.value = GameState.Game(R.string.hint2, attempts, maxCurrencyValue)
+            _gameState.value = GameState.Game(
+                R.string.input_request, R.string.hint2, attempts, maxCurrencyValue
+            )
         }
 
 
     }
-
     fun restartGame() {
         startNewGame()
     }
-
     private fun randomNumbers(): Int {
         val min = 1
         val max = 10
 
-        return if(maxCurrencyValue > 0){
+        return if (maxCurrencyValue > 0) {
             (min..maxCurrencyValue).random()
         } else (min..max).random()
 
     }
-
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(random)
         parcel.writeInt(attempts)
     }
-
     override fun describeContents(): Int {
         return 0
 
     }
-
     companion object CREATOR : Parcelable.Creator<GameViewModel> {
         override fun createFromParcel(parcel: Parcel): GameViewModel {
             return GameViewModel(parcel)
 
         }
-
         override fun newArray(size: Int): Array<GameViewModel?> {
             return arrayOfNulls(size)
 

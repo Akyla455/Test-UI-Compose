@@ -39,33 +39,21 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
     val gameState by viewModel.gameState.observeAsState()
     gameState?.let { state ->
         when (state) {
-            is GameState.InputRequest -> {
-                Column {
-                    GameScreen(
-                        resource = null,
-                        attempts = 0,
-                        value = state.maxValue,
-                        viewModel
-                    )
-
-                }
-
-            }
-
             is GameState.Win -> {
                 GameScreenRestart(
                     onRestartGameTap = { viewModel.restartGame() },
                     stringResource = state.titleResource,
 
-                )
+                    )
             }
 
             is GameState.Game -> {
                 Column {
                     GameScreen(
-                        resource = state.hintResource,
+                        titleResource = state.titleResource,
+                        hintResource = state.hintResource,
                         attempts = state.attempts,
-                        value = state.value,
+                        value = state.maxvalue,
                         viewModel
                     )
 
@@ -78,15 +66,11 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
 
     }
 
-
 }
 
 @Composable
 fun GameScreen(
-    resource: Int?,
-    attempts: Int,
-    value: Int,
-    viewModel: GameViewModel
+    titleResource: Int, hintResource: Int?, attempts: Int, value: Int, viewModel: GameViewModel
 ) {
 
 
@@ -99,9 +83,9 @@ fun GameScreen(
             style = TextStyle(color = Color.Black),
             text = stringResource(R.string.title)
         )
-        TitleText(string = stringResource(R.string.input_request, value))
+        TitleText(string = titleResource, value)
         ProcessingUserInput(viewModel)
-        HintText(hintResource = resource)
+        HintText(hintResource = hintResource)
         NumberAttempts(attempts = attempts)
 
 
@@ -112,7 +96,9 @@ fun GameScreen(
 
 
 @Composable
-fun TitleText(string: String) {
+fun TitleText(
+    string: Int, maxValue: Int
+) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
@@ -120,7 +106,20 @@ fun TitleText(string: String) {
         style = TextStyle(color = Color.Black),
         fontSize = 24.sp,
         textAlign = TextAlign.Center,
-        text = string
+        text = stringResource(string, maxValue)
+    )
+}
+
+@Composable
+fun RestartText(string: Int) {
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 25.dp),
+        style = TextStyle(color = Color.Black),
+        fontSize = 24.sp,
+        textAlign = TextAlign.Center,
+        text = stringResource(string)
     )
 }
 
@@ -243,7 +242,7 @@ fun GameScreenRestart(
             .fillMaxWidth()
             .padding(vertical = 100.dp, horizontal = 20.dp)
     ) {
-        TitleText(string = stringResource(stringResource))
+        RestartText(string = stringResource)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -251,8 +250,7 @@ fun GameScreenRestart(
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Button(
-                onClick = onRestartGameTap,
-                modifier = Modifier.size(width = 100.dp, height = 50.dp)
+                onClick = onRestartGameTap, modifier = Modifier.size(width = 100.dp, height = 50.dp)
             ) {
                 Text(
                     stringResource(R.string.yes),
@@ -262,7 +260,7 @@ fun GameScreenRestart(
                     textAlign = TextAlign.Center
                 )
             }
-               Button(
+            Button(
                 onClick = { activityProvider.finishCurrentActivity() },
                 modifier = Modifier.size(width = 100.dp, height = 50.dp)
             ) {
@@ -280,9 +278,10 @@ fun GameScreenRestart(
 }
 
 @Composable
-fun LoadingScreen(){
-    Box (modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center){
+fun LoadingScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+    ) {
         CircularProgressIndicator()
     }
 }
