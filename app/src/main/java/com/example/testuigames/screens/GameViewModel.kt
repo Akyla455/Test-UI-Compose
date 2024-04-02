@@ -1,7 +1,5 @@
 package com.example.testuigames.screens
 
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
@@ -16,7 +14,9 @@ import kotlinx.coroutines.withContext
 
 sealed class GameState {
     data object LoadingState : GameState()
-    data class Win(@StringRes val titleResource: Int) : GameState()
+    data class Win(
+        @StringRes val titleResource: Int
+    ) : GameState()
     data class Game(
         @StringRes val titleResource: Int,
         @StringRes val hintResource: Int? = null,
@@ -25,7 +25,8 @@ sealed class GameState {
     ) : GameState()
 
 }
-class GameViewModel() : ViewModel(), Parcelable {
+
+class GameViewModel : ViewModel() {
 
     private var random = randomNumbers()
     private var attempts = 0
@@ -35,10 +36,7 @@ class GameViewModel() : ViewModel(), Parcelable {
     val gameState: LiveData<GameState>
         get() = _gameState
 
-    constructor(parcel: Parcel) : this() {
-        random = parcel.readInt()
-        attempts = parcel.readInt()
-    }
+
 
     init {
         fetchCurrencyData()
@@ -53,7 +51,10 @@ class GameViewModel() : ViewModel(), Parcelable {
         attempts = 0
         _gameState.postValue(
             GameState.Game(
-                R.string.input_request, null, attempts, maxCurrencyValue
+                R.string.input_request,
+                null,
+                attempts,
+                maxCurrencyValue
             )
         )
     }
@@ -88,12 +89,18 @@ class GameViewModel() : ViewModel(), Parcelable {
 
         } else if (userInput > random) {
             _gameState.value = GameState.Game(
-                R.string.input_request, R.string.hint1, attempts, maxCurrencyValue
+                R.string.input_request,
+                R.string.hint1,
+                attempts,
+                maxCurrencyValue
             )
 
         } else {
             _gameState.value = GameState.Game(
-                R.string.input_request, R.string.hint2, attempts, maxCurrencyValue
+                R.string.input_request,
+                R.string.hint2,
+                attempts,
+                maxCurrencyValue
             )
         }
 
@@ -111,23 +118,6 @@ class GameViewModel() : ViewModel(), Parcelable {
         } else (min..max).random()
 
     }
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(random)
-        parcel.writeInt(attempts)
-    }
-    override fun describeContents(): Int {
-        return 0
 
-    }
-    companion object CREATOR : Parcelable.Creator<GameViewModel> {
-        override fun createFromParcel(parcel: Parcel): GameViewModel {
-            return GameViewModel(parcel)
 
-        }
-        override fun newArray(size: Int): Array<GameViewModel?> {
-            return arrayOfNulls(size)
-
-        }
-
-    }
 }

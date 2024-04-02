@@ -20,5 +20,4 @@ object NetworkManager {
         .build()
 
     val currencyApi: CurrencyApi = retrofit.create(CurrencyApi::class.java)
-
 }
