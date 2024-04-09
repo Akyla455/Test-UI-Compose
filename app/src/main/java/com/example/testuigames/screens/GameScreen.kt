@@ -16,6 +16,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -42,38 +43,40 @@ fun GameScreenState(viewModel: GameViewModel = viewModel()) {
             is GameState.Win -> {
                 GameScreenRestart(
                     onRestartGameTap = { viewModel.restartGame() },
-                    stringResource = state.titleResource,
-
-                    )
+                    stringResource = state.titleResource
+                )
             }
-
             is GameState.Game -> {
+                val userInputState = remember {
+                    mutableStateOf("")
+                }
                 Column {
                     GameScreen(
                         titleResource = state.titleResource,
                         hintResource = state.hintResource,
                         attempts = state.attempts,
                         value = state.maxvalue,
-                        viewModel
+                        userInput = userInputState,
+                        checkInput = { number ->
+                            viewModel.checkUserInput(number)
+                            userInputState.value = ""
+                        }
                     )
-
                 }
             }
-
             is GameState.LoadingState -> LoadingScreen()
-
         }
-
     }
-
 }
-
 @Composable
 fun GameScreen(
-    titleResource: Int, hintResource: Int?, attempts: Int, value: Int, viewModel: GameViewModel
+    titleResource: Int,
+    hintResource: Int?,
+    attempts: Int,
+    value: Int,
+    userInput: MutableState<String>,
+    checkInput: (Int) -> Unit
 ) {
-
-
     Column(
         modifier = Modifier.padding(vertical = 15.dp, horizontal = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -84,20 +87,14 @@ fun GameScreen(
             text = stringResource(R.string.title)
         )
         TitleText(string = titleResource, value)
-        ProcessingUserInput(viewModel)
+        ProcessingUserInput(checkInput, userInput)
         HintText(hintResource = hintResource)
         NumberAttempts(attempts = attempts)
-
-
     }
-
-
 }
-
-
 @Composable
 fun TitleText(
-    string: Int, maxValue: Int
+    string: Int, maxValue: Int? = null
 ) {
     Text(
         modifier = Modifier
@@ -106,30 +103,17 @@ fun TitleText(
         style = TextStyle(color = Color.Black),
         fontSize = 24.sp,
         textAlign = TextAlign.Center,
-        text = stringResource(string, maxValue)
+        text = if (maxValue != null) {
+            stringResource(string, maxValue)
+        } else {
+            stringResource(string)
+        }
     )
 }
-
 @Composable
-fun RestartText(string: Int) {
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 25.dp),
-        style = TextStyle(color = Color.Black),
-        fontSize = 24.sp,
-        textAlign = TextAlign.Center,
-        text = stringResource(string)
-    )
-}
-
-@Composable
-fun ProcessingUserInput(viewModel: GameViewModel) {
-
-    val userInput = remember {
-        mutableStateOf("")
-    }
-
+fun ProcessingUserInput(
+    checkInput: (number: Int) -> Unit, userInput: MutableState<String>
+) {
     Column(
         modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -142,17 +126,14 @@ fun ProcessingUserInput(viewModel: GameViewModel) {
                 .fillMaxWidth()
                 .height(50.dp),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-
         )
         Button(
             onClick = {
                 userInput.value.toIntOrNull()?.let { number ->
-                    viewModel.checkUserInput(number)
+                    checkInput(number)
                     userInput.value = ""
                 }
-
-
-            }, modifier = Modifier
+                      }, modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 15.dp)
                 .height(50.dp)
@@ -165,15 +146,10 @@ fun ProcessingUserInput(viewModel: GameViewModel) {
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold
                 ),
-
-
                 )
-
         }
-
     }
 }
-
 @Composable
 fun HintText(hintResource: Int?) {
     Row(
@@ -195,12 +171,8 @@ fun HintText(hintResource: Int?) {
                 style = TextStyle(color = Color.Black)
             )
         }
-
-
     }
-
 }
-
 @Composable
 fun NumberAttempts(attempts: Int) {
     Row(
@@ -220,14 +192,11 @@ fun NumberAttempts(attempts: Int) {
         )
     }
 }
-
 class ActivityProvider(private val activity: ComponentActivity?) {
     fun finishCurrentActivity() {
         activity?.finish()
     }
 }
-
-
 @Composable
 fun GameScreenRestart(
     onRestartGameTap: () -> Unit, stringResource: Int
@@ -242,7 +211,7 @@ fun GameScreenRestart(
             .fillMaxWidth()
             .padding(vertical = 100.dp, horizontal = 20.dp)
     ) {
-        RestartText(string = stringResource)
+        TitleText(string = stringResource)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -276,7 +245,6 @@ fun GameScreenRestart(
         }
     }
 }
-
 @Composable
 fun LoadingScreen() {
     Box(
