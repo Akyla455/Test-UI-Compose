@@ -1,4 +1,4 @@
-package com.example.testuigames.screens
+package com.example.testuigames.viewModels
 
 import android.util.Log
 import androidx.annotation.StringRes
@@ -31,6 +31,7 @@ class GameViewModel : ViewModel() {
     private var random = randomNumbers()
     private var attempts = 0
     private var maxCurrencyValue: Int = 0
+    private val appId = "686b5827047e4e33bdc06effd904e56d"
 
     private val _gameState = MutableLiveData<GameState>()
     val gameState: LiveData<GameState>
@@ -62,7 +63,7 @@ class GameViewModel : ViewModel() {
         _gameState.value = GameState.LoadingState
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val call = NetworkManager.currencyApi.getCurrencyData()
+                val call = NetworkManager.currencyApi.getCurrencyData(appId)
 
                 try {
                     val response = call.execute()
