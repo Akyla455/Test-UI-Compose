@@ -46,9 +46,7 @@ fun HomeScreen(
       is CharactersUiState.Success -> CharactersList(
          infoCharacters = charactersUiState.charactersSearch
       )
-
       is CharactersUiState.Error -> ErrorScreen()
-
    }
 }
 

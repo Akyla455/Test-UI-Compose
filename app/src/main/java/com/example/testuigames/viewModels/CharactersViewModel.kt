@@ -20,8 +20,8 @@ import java.io.IOException
 
 sealed interface CharactersUiState{
     data class Success(val charactersSearch: List<InfoCharacters>): CharactersUiState
-    object Error: CharactersUiState
-    object Loading: CharactersUiState
+    data object Error: CharactersUiState
+    data object Loading: CharactersUiState
 }
 
 class CharactersViewModel(
@@ -38,7 +38,6 @@ class CharactersViewModel(
 
     fun fetchCharactersData(){
         viewModelScope.launch {
-            delay(5000)
             charactersUiState = CharactersUiState.Loading
             charactersUiState =
                 try {
