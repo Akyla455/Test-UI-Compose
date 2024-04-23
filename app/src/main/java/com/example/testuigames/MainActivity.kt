@@ -10,7 +10,6 @@ import com.example.testuigames.ui.theme.TestUIGamesTheme
 
 
 class MainActivity : ComponentActivity() {
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

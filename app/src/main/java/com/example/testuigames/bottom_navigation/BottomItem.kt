@@ -10,12 +10,12 @@ sealed class BottomItem(
     data object Game : BottomItem(
         "Game",
         R.drawable.game,
-        "game_screen"
+        ConsDataNavigation.GAME_ROUTE
     )
 
     data object Characters : BottomItem(
         "characters",
         R.drawable.characters,
-        "characters_screen"
+        ConsDataNavigation.CHARACTERS_ROUTE
     )
 }

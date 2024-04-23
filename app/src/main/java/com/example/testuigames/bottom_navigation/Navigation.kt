@@ -11,11 +11,11 @@ import com.example.testuigames.ui.theme.screens.GameScreenState
 fun Navigation(
     navHostController: NavHostController
 ) {
-    NavHost(navController = navHostController, startDestination = "characters_screen") {
-        composable("game_screen") {
+    NavHost(navController = navHostController, startDestination = ConsDataNavigation.CHARACTERS_ROUTE) {
+        composable(ConsDataNavigation.GAME_ROUTE) {
             GameScreenState()
         }
-        composable("characters_screen") {
+        composable(ConsDataNavigation.CHARACTERS_ROUTE) {
             CharactersApp()
         }
     }
