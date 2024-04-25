@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.testuigames.CharactersApplication
+import com.example.testuigames.data.CharacterRemoteDataSource
 import com.example.testuigames.data.CharactersRepository
 import com.example.testuigames.model.InfoCharacters
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
@@ -25,12 +26,11 @@ sealed interface CharactersUiState{
 }
 
 class CharactersViewModel(
-    private val charactersRepository: CharactersRepository
+    private val charactersRepository: CharactersRepository,
 ): ViewModel(){
 
     var charactersUiState: CharactersUiState by mutableStateOf(CharactersUiState.Loading)
         private set
-
 
     init {
         fetchCharactersData()
@@ -47,15 +47,6 @@ class CharactersViewModel(
                 } catch (e: HttpException) {
                     CharactersUiState.Error
                 }
-        }
-    }
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = (this[APPLICATION_KEY] as CharactersApplication)
-                val charactersRepository = application.container.charactersRepository
-                CharactersViewModel(charactersRepository = charactersRepository)
-            }
         }
     }
 }

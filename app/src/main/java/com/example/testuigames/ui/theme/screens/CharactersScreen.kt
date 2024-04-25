@@ -1,5 +1,6 @@
 package com.example.testuigames.ui.theme.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,17 +20,20 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.testuigames.bottom_navigation.ConsDataNavigation.GAME_ROUTE
 import com.example.testuigames.model.InfoCharacters
 import com.example.testuigames.viewModels.CharactersUiState
 import com.example.testuigames.viewModels.CharactersViewModel
+import org.koin.androidx.compose.koinViewModel
 import java.nio.file.WatchEvent
 
 @Composable
-fun CharactersApp() {
-   val charactersViewModel: CharactersViewModel =
-      viewModel(factory = CharactersViewModel.Factory)
+fun CharactersApp(
+   charactersViewModel: CharactersViewModel = koinViewModel()
+) {
    Surface(
       modifier = Modifier.fillMaxSize()
    ) {
