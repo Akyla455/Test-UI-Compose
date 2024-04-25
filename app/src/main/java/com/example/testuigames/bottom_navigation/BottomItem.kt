@@ -7,13 +7,13 @@ sealed class BottomItem(
     val icon: Int,
     val route: String
 ) {
-    data object Game : BottomItem(
+    data object Game: BottomItem(
         "Game",
         R.drawable.game,
         ConsDataNavigation.GAME_ROUTE
     )
 
-    data object Characters : BottomItem(
+    data object Characters: BottomItem(
         "characters",
         R.drawable.characters,
         ConsDataNavigation.CHARACTERS_ROUTE

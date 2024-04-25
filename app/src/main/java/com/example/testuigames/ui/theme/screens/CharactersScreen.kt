@@ -1,5 +1,6 @@
 package com.example.testuigames.ui.theme.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +25,6 @@ import coil.request.ImageRequest
 import com.example.testuigames.model.InfoCharacters
 import com.example.testuigames.viewModels.CharactersUiState
 import com.example.testuigames.viewModels.CharactersViewModel
-import java.nio.file.WatchEvent
 
 @Composable
 fun CharactersApp() {
@@ -60,13 +60,15 @@ fun CharactersList(
       }
    }
 }
-
 @Composable
 fun CardCharacters(
    infoCharacters: InfoCharacters
 ) {
    Card(
       modifier = Modifier
+         .clickable {
+
+         }
          .fillMaxWidth()
          .padding(5.dp)
          .requiredHeight(100.dp)

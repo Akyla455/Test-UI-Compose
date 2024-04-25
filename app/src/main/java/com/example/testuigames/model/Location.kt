@@ -1,11 +1,11 @@
-package com.example.listcharacters
+package com.example.testuigames.model
 
 import com.google.gson.annotations.SerializedName
+data class Location(
 
-
-data class Location (
-
-  @SerializedName("name" ) var name : String? = null,
-  @SerializedName("url"  ) var url  : String? = null
+    @SerializedName("name")
+    var name: String? = null,
+    @SerializedName("url")
+    var url: String? = null
 
 )

@@ -6,6 +6,7 @@ import com.example.testuigames.network.CharactersService
 interface CharactersRepository {
     suspend fun getCharacters(): List<InfoCharacters>
 }
+
 class NetworkCharactersRepository(
     private val charactersService: CharactersService
 ): CharactersRepository{
@@ -14,9 +15,10 @@ class NetworkCharactersRepository(
             .getCharactersList().results.map { results ->
                 InfoCharacters(
                     name = results.name,
-                    image = results.image
+                    image = results.image,
+                    species = results.species,
+                    episode = results.episode
                 )
             }
     }
-
 }
