@@ -18,4 +18,6 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="attempts_format"> %1\$d</string>
+    <string name="loading_failed">Ошибка загрузки</string>
+    <string name="retry">Повторить</string>
 </resources>
