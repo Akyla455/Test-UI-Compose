@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.testuigames.bottom_navigation.BottomNavigation
 import com.example.testuigames.bottom_navigation.Navigation
+import com.example.testuigames.model.InfoCharacters
+
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()

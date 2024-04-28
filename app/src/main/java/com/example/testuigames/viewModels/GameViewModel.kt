@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.testuigames.R
+import com.example.testuigames.data.CurrencyRepository
 import com.example.testuigames.data.DataBasePreferences
-import com.example.testuigames.network.NetworkManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -29,12 +29,13 @@ sealed class GameState {
 
 }
 
-class GameViewModel : ViewModel() {
-    private val dataBase = DataBasePreferences()
+class GameViewModel(
+    private val dataBasePreferences: DataBasePreferences,
+    private val currencyRepository: CurrencyRepository
+) : ViewModel() {
+    private var maxCurrencyValue: Int = 10
     private var random = randomNumbers()
     private var attempts = 0
-    private var maxCurrencyValue: Int = 0
-    private val appId = "686b5827047e4e33bdc06effd904e56d"
     private val _gameState = MutableLiveData<GameState>()
     val gameState: LiveData<GameState>
         get() = _gameState
@@ -65,24 +66,24 @@ class GameViewModel : ViewModel() {
         _gameState.value = GameState.LoadingState
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val call = NetworkManager.currencyApi.getCurrencyData(appId)
+                val call = currencyRepository.getCurrency()
 
                 try {
                     val response = call.execute()
                     if (response.isSuccessful) {
                         val dataCurrency = response.body()
                         if (dataCurrency != null) {
-                            //dataBase.deleteData()
+                            dataBasePreferences.deleteData()
                             maxCurrencyValue = dataCurrency.rates.rub.toInt()
-                            //dataBase.saveData(maxCurrencyValue)
+                            dataBasePreferences.saveData(maxCurrencyValue)
                             startNewGame(maxCurrencyValue)
                         }
                     } else {
-                        //maxCurrencyValue = dataBase.getData()
                         Log.e("GameViewModel", "Error: ${response.code()}")
-                        startNewGame()
                     }
                 } catch (e: Exception) {
+                    maxCurrencyValue = dataBasePreferences.getData()
+                    startNewGame(maxCurrencyValue)
                     Log.e("GameViewModel", "Failed to fetch currency data", e)
                 }
             }
@@ -117,13 +118,6 @@ class GameViewModel : ViewModel() {
     }
     private fun randomNumbers(): Int {
         val min = 1
-        val max = 10
-
-        return if (maxCurrencyValue > 0) {
-            (min..maxCurrencyValue).random()
-        } else (min..max).random()
-
+        return (min..maxCurrencyValue).random()
     }
-
-
 }

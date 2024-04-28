@@ -19,32 +19,41 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.testuigames.model.InfoCharacters
 import com.example.testuigames.viewModels.CharactersUiState
 import com.example.testuigames.viewModels.CharactersViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CharactersApp() {
-   val charactersViewModel: CharactersViewModel =
-      viewModel(factory = CharactersViewModel.Factory)
+fun CharactersApp(
+   //navHostController: NavHostController,
+   charactersViewModel: CharactersViewModel = koinViewModel()
+
+) {
    Surface(
       modifier = Modifier.fillMaxSize()
    ) {
-      HomeScreen(charactersUiState = charactersViewModel.charactersUiState)
+      HomeScreen(
+         charactersUiState = charactersViewModel.charactersUiState,
+         //navHostController
+
+      )
    }
 }
 
 @Composable
 fun HomeScreen(
-   charactersUiState: CharactersUiState
+   charactersUiState: CharactersUiState,
+   //navHostController: NavHostController
+
 ) {
    when (charactersUiState) {
       is CharactersUiState.Loading -> LoadingScreen()
       is CharactersUiState.Success -> CharactersList(
-         infoCharacters = charactersUiState.charactersSearch
+         infoCharacters = charactersUiState.charactersSearch,
+         //navHostController
       )
       is CharactersUiState.Error -> ErrorScreen()
    }
@@ -52,22 +61,28 @@ fun HomeScreen(
 
 @Composable
 fun CharactersList(
-   infoCharacters: List<InfoCharacters>
+   infoCharacters: List<InfoCharacters>,
+   //navHostController: NavHostController
 ) {
    LazyColumn {
       itemsIndexed(infoCharacters) { _, character ->
-         CardCharacters(infoCharacters = character)
+         CardCharacters(
+            infoCharacters = character,
+            //navHostController
+            )
       }
    }
 }
 @Composable
 fun CardCharacters(
-   infoCharacters: InfoCharacters
+   infoCharacters: InfoCharacters,
+   //navHostController: NavHostController
+
 ) {
    Card(
       modifier = Modifier
          .clickable {
-
+            //navHostController.navigate(ConsDataNavigation.INFO_CHARACTERS_SCREEN)
          }
          .fillMaxWidth()
          .padding(5.dp)

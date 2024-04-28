@@ -33,9 +33,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.testuigames.R
 import com.example.testuigames.viewModels.GameState
 import com.example.testuigames.viewModels.GameViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun GameScreenState(viewModel: GameViewModel = viewModel()) {
+fun GameScreenState(
+    viewModel: GameViewModel = koinViewModel()
+) {
     val gameState by viewModel.gameState.observeAsState()
     gameState?.let { state ->
         when (state) {
