@@ -8,7 +8,6 @@ import com.example.testuigames.data.CurrencyRepository
 import com.example.testuigames.data.DataBasePreferences
 import com.example.testuigames.data.NetworkCharactersRepository
 import com.example.testuigames.data.NetworkCurrencyRepository
-import com.example.testuigames.model.InfoCharacters
 import com.example.testuigames.network.CharacterRetrofit
 import com.example.testuigames.network.CurrencyRetrofit
 import com.example.testuigames.viewModels.CharactersViewModel

@@ -19,8 +19,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.testuigames.bottom_navigation.ConsDataNavigation
 import com.example.testuigames.model.InfoCharacters
 import com.example.testuigames.viewModels.CharactersUiState
 import com.example.testuigames.viewModels.CharactersViewModel
@@ -28,7 +30,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CharactersApp(
-   //navHostController: NavHostController,
+   navHostController: NavHostController,
    charactersViewModel: CharactersViewModel = koinViewModel()
 
 ) {
@@ -37,7 +39,7 @@ fun CharactersApp(
    ) {
       HomeScreen(
          charactersUiState = charactersViewModel.charactersUiState,
-         //navHostController
+         navHostController
 
       )
    }
@@ -46,14 +48,14 @@ fun CharactersApp(
 @Composable
 fun HomeScreen(
    charactersUiState: CharactersUiState,
-   //navHostController: NavHostController
+   navHostController: NavHostController
 
 ) {
    when (charactersUiState) {
       is CharactersUiState.Loading -> LoadingScreen()
       is CharactersUiState.Success -> CharactersList(
          infoCharacters = charactersUiState.charactersSearch,
-         //navHostController
+         navHostController
       )
       is CharactersUiState.Error -> ErrorScreen()
    }
@@ -62,13 +64,13 @@ fun HomeScreen(
 @Composable
 fun CharactersList(
    infoCharacters: List<InfoCharacters>,
-   //navHostController: NavHostController
+   navHostController: NavHostController
 ) {
    LazyColumn {
       itemsIndexed(infoCharacters) { _, character ->
          CardCharacters(
             infoCharacters = character,
-            //navHostController
+            navHostController
             )
       }
    }
@@ -76,13 +78,14 @@ fun CharactersList(
 @Composable
 fun CardCharacters(
    infoCharacters: InfoCharacters,
-   //navHostController: NavHostController
-
+   navHostController: NavHostController
 ) {
    Card(
       modifier = Modifier
          .clickable {
-            //navHostController.navigate(ConsDataNavigation.INFO_CHARACTERS_SCREEN)
+            navHostController.navigate(
+               "${ConsDataNavigation.INFO_CHARACTERS_SCREEN}/${infoCharacters.id}"
+            )
          }
          .fillMaxWidth()
          .padding(5.dp)

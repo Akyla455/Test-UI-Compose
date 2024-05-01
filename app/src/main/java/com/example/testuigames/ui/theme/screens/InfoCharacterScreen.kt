@@ -6,28 +6,36 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.testuigames.data.CharactersRepository
 import com.example.testuigames.model.InfoCharacters
+import org.koin.androidx.compose.get
 
 @Composable
 fun InfoCharactersScreen(
-    info: InfoCharacters
-){
+    infoCharactersId: Int?,
+    charactersRepository: CharactersRepository = get()
+) {
+    val info = infoCharactersId?.let {
+        charactersRepository.getCharacterById(it)
+    }
     Column(modifier = Modifier.fillMaxSize()) {
         AsyncImage(
             modifier = Modifier.fillMaxHeight(),
                     model = ImageRequest.Builder(context = LocalContext.current)
-                        .data(info.image)
+                        .data(info?.image)
                         .crossfade(true)
                         .build(),
             contentDescription = null
         )
-        info.name?.let {
+        info?.name?.let {
             Text(
                 modifier = Modifier.padding(
                 start = 8.dp,
@@ -36,7 +44,7 @@ fun InfoCharactersScreen(
                 fontSize = 24.sp
             )
         }
-        info.species?.let {
+        info?.species?.let {
             Text(
                 modifier = Modifier.padding(
                     start = 8.dp,
@@ -46,6 +54,6 @@ fun InfoCharactersScreen(
                 fontSize = 24.sp
                 )
         }
-        Text(text = info.episode.toString())
+        Text(text = info?.episode.toString())
     }
 }
