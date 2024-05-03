@@ -49,15 +49,6 @@ class CharactersViewModel(
                 }
         }
     }
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = (this[APPLICATION_KEY] as CharactersApplication)
-                val charactersRepository = application.container.charactersRepository
-                CharactersViewModel(charactersRepository = charactersRepository)
-            }
-        }
-    }
 }
 
 

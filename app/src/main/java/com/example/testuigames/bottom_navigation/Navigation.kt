@@ -6,11 +6,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.testuigames.ui.theme.screens.CharactersApp
 import com.example.testuigames.ui.theme.screens.GameScreenState
-import com.example.testuigames.ui.theme.screens.InfoCharactersScreen
 
 @Composable
 fun Navigation(
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    //info: InfoCharacters
 ) {
     NavHost(navController = navHostController, startDestination = ConsDataNavigation.CHARACTERS_ROUTE) {
         composable(ConsDataNavigation.GAME_ROUTE) {
@@ -19,8 +19,8 @@ fun Navigation(
         composable(ConsDataNavigation.CHARACTERS_ROUTE) {
             CharactersApp()
         }
-//        composable(ConsDataNavigation.INFO_CHARACTERS_SCREEN){
-//            InfoCharactersScreen(info = )
+//        composable(ConsDataNavigation.INFO_CHARACTERS_SCREEN) {
+//            InfoCharactersScreen()
 //        }
     }
 }
