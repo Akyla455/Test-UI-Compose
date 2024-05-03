@@ -5,21 +5,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.testuigames.CharactersApplication
 import com.example.testuigames.data.CharactersRepository
 import com.example.testuigames.model.InfoCharacters
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
 
 sealed interface CharactersUiState{
-    data class Success(val charactersSearch: List<InfoCharacters>): CharactersUiState
+    data class Success(val charactersSearch: List<InfoCharacters>) : CharactersUiState
     data object Error: CharactersUiState
     data object Loading: CharactersUiState
 }

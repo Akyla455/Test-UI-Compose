@@ -26,7 +26,7 @@ class NetworkCharactersRepository(
                 )
             }
         }
-        return characters.map {results ->
+        return characters.map { results ->
             InfoCharacters(
                 id = results.id,
                 name = results.name,

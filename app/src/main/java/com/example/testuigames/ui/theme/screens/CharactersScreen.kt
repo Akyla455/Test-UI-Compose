@@ -71,7 +71,7 @@ fun CharactersList(
          CardCharacters(
             infoCharacters = character,
             navHostController
-            )
+         )
       }
    }
 }
@@ -83,9 +83,8 @@ fun CardCharacters(
    Card(
       modifier = Modifier
          .clickable {
-            navHostController.navigate(
-               "${ConsDataNavigation.INFO_CHARACTERS_SCREEN}/${infoCharacters.id}"
-            )
+            navHostController
+               .navigate("${ConsDataNavigation.INFO_CHARACTERS_SCREEN}/${infoCharacters.id}")
          }
          .fillMaxWidth()
          .padding(5.dp)
