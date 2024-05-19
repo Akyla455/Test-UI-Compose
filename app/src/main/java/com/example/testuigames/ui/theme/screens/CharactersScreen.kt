@@ -92,7 +92,8 @@ fun CardCharacters(
          .background(Color.Black)
          .clickable {
             navHostController
-               .navigate("${ConsDataNavigation.INFO_CHARACTERS_SCREEN}/${infoCharacters.id}")
+//               .navigate("${ConsDataNavigation.INFO_CHARACTERS_SCREEN}/${infoCharacters.id}")
+               .navigate(ConsDataNavigation.INFO_CHARACTERS_SCREEN)
          }
          .fillMaxWidth()
          .padding(5.dp)

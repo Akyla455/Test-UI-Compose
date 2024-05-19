@@ -8,8 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,31 +24,66 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.testuigames.R
-import com.example.testuigames.data.CharactersRepository
-import org.koin.androidx.compose.get
+import com.example.testuigames.model.InfoCharacters
+import com.example.testuigames.viewModels.InfoCharactersViewModel
+import com.example.testuigames.viewModels.InfoState
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun InfoApp(
+    infoCharactersViewModel: InfoCharactersViewModel = koinViewModel()
+){
+    Surface(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        InfoScreenState(infoState = infoCharactersViewModel.infoState)
+    }
+}
+
+@Composable
+fun InfoScreenState(
+    infoState: InfoState
+) {
+    when (infoState) {
+        is InfoState.Error -> ErrorScreen()
+        is InfoState.Loading -> LoadingScreen()
+        is InfoState.Success -> InfoList(info = infoState.infoCharacter)
+    }
+}
+
+@Composable
+fun InfoList(
+    info: List<InfoCharacters>
+) {
+    LazyColumn {
+        itemsIndexed(info){_, info ->
+            InfoCharactersScreen(info = info)
+        }
+    }
+}
 
 @Composable
 fun InfoCharactersScreen(
-    infoCharactersId: Int?,
-    charactersRepository: CharactersRepository = get()
+    info: InfoCharacters
+//    infoCharactersId: Int?,
+//    charactersRepository: CharactersRepository = get()
 ) {
-    val info = infoCharactersId?.let {
-        charactersRepository.getCharacterById(it)
-    }
-    val stateScroll = rememberScrollState()
+//    val info = infoCharactersId?.let {
+//        charactersRepository.getCharacterById(it)
+//    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .animateContentSize()
-            .verticalScroll(stateScroll)
             .background(Color.Gray)
     ) {
         AsyncImage(
-            modifier = Modifier.
-                fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .size(300.dp),
                     model = ImageRequest.Builder(context = LocalContext.current)
-                        .data(info?.image)
+                        .data(info.image)
                         .crossfade(true)
                         .build(),
             contentDescription = null
@@ -69,7 +105,7 @@ fun InfoCharactersScreen(
                        fontWeight = FontWeight.Bold
                    )
                )
-               info?.name?.let {
+               info.name?.let {
                    Text(
                        text = it,
                        fontSize = 22.sp
@@ -92,7 +128,7 @@ fun InfoCharactersScreen(
                        fontWeight = FontWeight.Bold
                    )
                )
-               info?.species?.let {
+               info.species?.let {
                    Text(
                        text = it,
                        fontSize = 22.sp
@@ -117,7 +153,7 @@ fun InfoCharactersScreen(
                 )
             )
             Text(
-                text = info?.episode.toString(),
+                text = info.episode.toString(),
                 fontSize = 16.sp
             )
         }

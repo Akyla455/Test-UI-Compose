@@ -12,6 +12,7 @@ import com.example.testuigames.network.CharacterRetrofit
 import com.example.testuigames.network.CurrencyRetrofit
 import com.example.testuigames.viewModels.CharactersViewModel
 import com.example.testuigames.viewModels.GameViewModel
+import com.example.testuigames.viewModels.InfoCharactersViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.GlobalContext.startKoin
@@ -38,6 +39,7 @@ class CharactersApplication: Application() {
         single { CharacterRemoteDataSource(get()) }
         single<CharactersRepository> { NetworkCharactersRepository(get()) }
         viewModel { CharactersViewModel(get()) }
+        viewModel { InfoCharactersViewModel(get()) }
     }
     private fun gameRootModule() = module {
         single { CurrencyRetrofit() }

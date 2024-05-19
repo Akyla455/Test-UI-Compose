@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.testuigames.ui.theme.screens.CharactersApp
 import com.example.testuigames.ui.theme.screens.GameScreenState
+import com.example.testuigames.ui.theme.screens.InfoApp
 import com.example.testuigames.ui.theme.screens.InfoCharactersScreen
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -27,20 +28,23 @@ fun Navigation(
         composable(ConsDataNavigation.CHARACTERS_ROUTE) {
             CharactersApp(navHostController)
         }
-        composable(
-            "${
-                ConsDataNavigation
-                    .INFO_CHARACTERS_SCREEN
-            }/{infoCharactersId}",
-            arguments = listOf(navArgument("infoCharactersId") {
-                type = NavType.IntType
-            })
-        )
-        { backStackEntry ->
-            val infoCharactersId = backStackEntry.arguments?.getInt("infoCharactersId")
-            InfoCharactersScreen(
-                infoCharactersId = infoCharactersId
-            )
+        composable(ConsDataNavigation.INFO_CHARACTERS_SCREEN){
+            InfoApp()
         }
+//        composable(
+//            "${
+//                ConsDataNavigation
+//                    .INFO_CHARACTERS_SCREEN
+//            }/{infoCharactersId}",
+//            arguments = listOf(navArgument("infoCharactersId") {
+//                type = NavType.IntType
+//            })
+//        )
+//        { backStackEntry ->
+//            val infoCharactersId = backStackEntry.arguments?.getInt("infoCharactersId")
+//            InfoCharactersScreen(
+//                infoCharactersId = infoCharactersId
+//            )
+//        }
     }
 }
