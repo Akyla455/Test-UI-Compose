@@ -3,7 +3,6 @@
     <string name="title">Угадай число</string>
     <string name="condition">Я думаю о числе от 1 до 10. Сможешь угадать?</string>
     <string name="textCheckButton">Ввод</string>
-
     <string name="input_request">Я думаю о числе от 1 до %d . Сможете ли вы угадать его?</string>
     <string name="input_numbers">Введите число</string>
     <string name="input">Ввод</string>
@@ -20,4 +19,8 @@
     <string name="attempts_format"> %1\$d</string>
     <string name="loading_failed">Ошибка загрузки</string>
     <string name="retry">Повторить</string>
+    <string name="name_character">Name character: </string>
+    <string name="species_character">Species character: </string>
+    <string name="episode_character">Episode: </string>
+
 </resources>

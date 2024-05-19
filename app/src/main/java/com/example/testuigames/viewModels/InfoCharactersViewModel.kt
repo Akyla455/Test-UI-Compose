@@ -1,6 +1,5 @@
 package com.example.testuigames.viewModels
 
-
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,40 +11,33 @@ import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpExce
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-sealed interface CharactersUiState{
-    data class Success(val charactersSearch: List<InfoCharacters>) : CharactersUiState
-    data object Error: CharactersUiState
-    data object Loading: CharactersUiState
+sealed interface InfoState {
+    data object Error : InfoState
+    data object Loading : InfoState
+    data class Success(val infoCharacter: List<InfoCharacters>) : InfoState
 }
 
-class CharactersViewModel(
+class InfoCharactersViewModel(
     private val charactersRepository: CharactersRepository
-): ViewModel(){
-
-    var charactersUiState: CharactersUiState by mutableStateOf(CharactersUiState.Loading)
+) : ViewModel() {
+    var infoState: InfoState by mutableStateOf(InfoState.Loading)
         private set
 
-
     init {
-        fetchCharactersData()
+        fetchInfoCharacter()
     }
 
-    fun fetchCharactersData(){
+    private fun fetchInfoCharacter() {
         viewModelScope.launch {
-            charactersUiState = CharactersUiState.Loading
-            charactersUiState =
+            infoState = InfoState.Loading
+            infoState =
                 try {
-                    CharactersUiState.Success(charactersRepository.getCharacters())
+                    InfoState.Success(charactersRepository.getCharacters())
                 } catch (e: IOException) {
-                    CharactersUiState.Error
+                    InfoState.Error
                 } catch (e: HttpException) {
-                    CharactersUiState.Error
+                    InfoState.Error
                 }
         }
     }
 }
-
-
-
-
-
